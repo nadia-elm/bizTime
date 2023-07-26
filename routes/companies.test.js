@@ -35,6 +35,60 @@ describe('get companies in db', function(){
     
 })
 
+describe('get a single company with id', function() {
+    test('get specific company', async () => {
+        const res = await request(app).get('/companies/abcd');
+        expect(res.statusCode).toBe(200);
+        expect(res.body.company).toBeDefined()
+    })
+    test('return 404 if company not found', async() => {
+        const res = await request(app).get('/wrongCompany');
+        expect(res.statusCode).toBe(404)
+    })
+})
+
+// describe('create a new company', function() {
+//     const newCompany = {
+//         code : 'new',
+//         name : 'theCompany',
+//         description : 'second test'
+//     }
+//     test('create a company', async () =>{
+//         const res = await request(app).post('/').send(newCompany)
+//         expect(res.body).toBe({company: {code : 'new', name : 'theCompany', description: 'second test'}})
+//     })
+// })
+
+describe('update existing company', () => {
+    const updatedCompany = {
+        name :'updated',
+        description: 'this is the updated version'
+    }
+    test('update company with provided code', async () => {
+        const res = await request(app).put('/companies/abcd').send(updatedCompany)
+         expect(res.body.company.code).toBe('abcd')
+         expect(res.body.company.name).toBe('updated')
+         expect(res.statusCode).toBe(200)
+
+    })
+    test('return 404 if company does not exist', async() => {
+        const res = await request(app).put('/someCompany').send(updatedCompany);
+        expect(res.statusCode).toBe(404)
+    })
+}) 
+
+
+describe('delete a specific company', function () {
+    test('delete company', async () => {
+    const res = await request(app).delete('/companies/abcd')
+    expect(res.body.message).toBe('deleted successfully')
+    })
+    
+
+
+})
+
+
 
 
 
